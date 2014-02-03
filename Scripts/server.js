@@ -12,9 +12,9 @@ if (typeof String.prototype.endsWith != 'function') {
   };
 }
 
-var childWindowUrl = "/clientwindow.html";
-var childWindowWidth = 250;
-var childWindowHeight = 100;
+var clientWindowUrl = "/clientwindow.html";
+var clientWindowWidth = 275;
+var clientWindowHeight = 440;
 var windowTopCoord = 0;
 var domain = "";
 
@@ -67,12 +67,12 @@ function newUser() {
     
     //pagelocation = location.href;
     var pageUrl = location.pathname;
-    pageUrl = pageUrl.replace("/serverwindow.html", "/clientwindow.html");
+    pageUrl = pageUrl.replace("/serverwindow.html", clientWindowUrl);
     
     win = window.open(pageUrl, user.name, "width=275, height=440" +
                                                ", top=" + (topEdge + windowTopCoord + 2) +
                                                ", left=" + (rhsEdge + 2));
-    windowTopCoord += 175;
+    windowTopCoord += 50;
     
     user.window = win;
     user.id = id;
@@ -102,10 +102,6 @@ function broadcastUsers() {
         connectedUsers += "/" + users[i].name;
     }
     for (var i = 0; i < users.length; i++) {
-        // Post  a cross domain messgae. The 2nd parameter can be one of the following:
-        //  - expected origin of target
-        //  - * (if you don't care)
-        //  - / 9if it must be the same as the sender)
         users[i].window.postMessage(connectedUsers, "*");
     }
 }
@@ -163,10 +159,7 @@ function manageConnection(user, command) {
 function onMessage(e) {
     //Handle message sent to child window
     /*if (e.origin == domain) {
-        alert("Main window accepting message from " + e.origin);
-        balance -= e.data;
-        document.getElementById("balance").innerHTML = balance;
-        broadcast();
+     *
     }
     else {
         alert("Child window rejecting message from " + e.origin);
