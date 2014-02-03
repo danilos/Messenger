@@ -67,7 +67,7 @@ function processMessage(message) {
         connectUser(sender);
     }
     
-    var conversationdiv = document.getElementById("content-" + currentConversation.user.name);
+    var conversationdiv = document.getElementById("content-" + sender);
     var div = document.createElement("div");
     div.innerHTML = txt;
     div.className= "text-left";
