@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Messenger activity</title>
+    <link rel="stylesheet" type="text/css" href="Styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="Styles/bootstrap.css" />
+</head>
+
+<body>
+    <label>Connected users</label><br>
+    <select id="connectedUsers" width="50" height="125" readonly="readonly"></select><br>
+    <input type="text" id="username" /> <button onclick="newUser(); displayUsers();">New User</button>
+    <br/><br/>
+    
+    <button onclick="closeAll();">Close all</button><button onclick="messageUser();">Message user</button>
+
+    <script type="text/javascript" src="Scripts/server.js"></script>
+    <script type="text/javascript" src="Scripts/bootstrap.js"></script>
+</body>
+</html>

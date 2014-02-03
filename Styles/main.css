@@ -1,0 +1,95 @@
+button {
+}
+
+.viewport {
+    position: relative;
+    /*height:100vh;*/
+    background: rgb(250,250,255);
+    bottom: 0;
+}
+
+.lockedBottom{
+    
+}
+
+.tabs {
+  position: relative;
+  min-height: 150px;
+  clear: both;
+  margin: 5px 0;
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+  background:rgb(250,250,250);
+}
+
+.fullbox {
+  float: left;
+  width:100%;
+  position: relative;   
+  min-height: 100px; /* This part sucks */
+  clear: both;
+  margin: 5px 0;
+  background:rgb(250,250,250);
+}
+
+.tab {
+  float: left;
+}
+
+.selector{
+    min-width: 100px;
+    width: 100%;
+}
+
+select {
+    min-width: 155px;
+}
+
+.tab label {
+  background: #eee; 
+  padding: 5px; 
+  border: 1px solid #ccc; 
+  margin-left: -1px; 
+  position: relative;
+  left: 1px;
+  background:rgb(230,230,230);
+}
+
+.tab label:hover {
+  background: rgba(200,200,250,0.5);
+  top: 0;
+}
+
+.tab [type=radio] {
+  display: none;   
+}
+
+.content {
+  position: absolute;
+  top: 28px;
+  left: 0;
+  background: rgb(255,255,255);
+  right: 0;
+  bottom: 0;
+  padding: 10px;
+  border: 1px solid #ccc; 
+}
+
+[type=radio]:checked ~ label {
+  background: white;
+  border-bottom: 1px solid white;
+  z-index: 2;
+}
+
+[type=radio]:checked ~ label ~ .content {
+  z-index: 1;
+}
+
+div.text-left{
+    background-color: rgb(200,250,200);
+}
+
+div.text-right{
+    background-color: rgb(200,200,250);
+}

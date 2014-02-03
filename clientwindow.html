@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Child window</title>
+    <link rel="stylesheet" type="text/css" href="Styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="Styles/bootstrap.css" />
+</head>
+
+<body>
+    <div class="viewport">
+        <div class="container">
+            <div>
+                <label>Connected users</label><br>
+                <select id="connectedUsers" width="20" height="100" readonly="readonly" class="selector"></select>
+                <button onclick="connectToUser();">Connect</button>
+            </div>
+            <hr>
+            <div >
+                <label>Connected as: </label><span id="user-name"></span>
+            </div>
+            
+            <div class="tabs" id="tabs">
+                
+               <div class="tab" id="tab-">
+                   <input type="radio" id="radio-" name="user-selector">
+                   <label id="label-" for="tab-">user-</label>
+                   
+                   <div class="content" id="content-">
+                   </div> 
+               </div>
+                
+            </div>
+            
+            <textarea id="message" autofocus="autofocus" class="fullbox">
+    
+            </textarea>
+            <button id="disconnect" class="lockedBottom" onclick="disconnect();">Disconnect</button>
+            <button id="send" class="lockedBottom" onclick="sendMessage();">Send</button>
+        </div>
+    </div>
+    <script type="text/javascript" src="Scripts/child.js"></script>
+    <script type="text/javascript" src="Scripts/bootstrap.js"></script>
+
+</body>
+</html>
