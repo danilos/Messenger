@@ -111,6 +111,7 @@ function updateMessageSent(msg){
     div.className= "text-right";
     conversationdiv.appendChild(div);
     document.getElementById("message").value = "";
+    conversationdiv.scrollTop = conversationdiv.scrollHeight;
 }
 
 function updateMessageReceived(msg){
@@ -118,11 +119,13 @@ function updateMessageReceived(msg){
     //find sender's conversation tab
     //update conversation
     
-    var conversationdiv = document.getElementById("conversation");
+    //var conversationdiv = document.getElementById("conversation");
+    var conversationdiv = document.getElementById("content-" + currentConversation.user.name);
     var div = document.createElement("div");
     div.innerHTML = msg;
     div.className= "text-left";
     conversationdiv.appendChild(div);
+    conversationdiv.scrollTop = conversationdiv.scrollHeight;
 }
 
 function sendMessage() {

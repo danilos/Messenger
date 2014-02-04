@@ -82,6 +82,17 @@ select {
   overflow-y: scroll;
 }
 
+.properties {
+  position: absolute;
+  top: 28px;
+  left: 0;
+  background: rgb(255,255,255);
+  right: 0;
+  bottom: 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
 [type=radio]:checked ~ label {
   background: white;
   border-bottom: 1px solid white;
