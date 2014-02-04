@@ -15,6 +15,10 @@ if (typeof String.prototype.endsWith != 'function') {
 //Global variables
 var domain = "";
 
+var profileWindowUrl = "/userprofile.html";
+var profileWindowWidth = 275;
+var profileWindowHeight = 275;
+
 var users = [];
 var conversations = [];
 var currentConversation = null;
@@ -180,6 +184,15 @@ function connectToUser(){
     }
     
     connectUser(username);
+}
+
+function editProfile(){
+  
+  var pageUrl = location.pathname;
+  pageUrl = pageUrl.replace("/clientwindow.html", profileWindowUrl);
+  var win = window.open(pageUrl, "Profile " + window.name, "width=275, height=275" +
+                                               ", top=" + 50 +
+                                               ", left=" + 50);
 }
 
 function connectUser(username){
