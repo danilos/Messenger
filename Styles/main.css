@@ -119,3 +119,16 @@ div.text-right{
     background-color: rgb(200,200,250);
     border-radius: 5px 0px 20px 5px
 }
+
+.timestamp{
+    font-size: 10px;
+    color: rgb(100,100,100);
+    font-style: italic;
+}
+
+label.simple{
+    border: none;
+    color: rgb(0,0,0);
+    font-size: 11px;
+    background: transparent;
+}

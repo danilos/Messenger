@@ -1,1 +1,3 @@
 'strict'
+
+var okSelected = false;

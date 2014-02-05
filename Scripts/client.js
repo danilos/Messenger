@@ -23,6 +23,12 @@ var users = [];
 var conversations = [];
 var currentConversation = null;
 
+/* personal user preferences */
+var timeStamp = true;
+var recordTime = true;
+var recordUser = true;
+var recordDate = true;
+
 function existsUser(username) {
     if (!users) return null;
     for (var i=0; i<users.length; i++) {
@@ -39,11 +45,11 @@ function existsConversation(username) {
         if (conversations[i].user.name === username) {
             return conversations[i];
         }
-    }
+    }  
     return null;
 }
 
-function processUsers(connectedUsers) {
+function processUsersReceived(connectedUsers) {
     var connectedUsers = connectedUsers.replace("users:/", "");
     var usersList = connectedUsers.split("/");
     
@@ -57,7 +63,7 @@ function processUsers(connectedUsers) {
     displayUsers();
 }
 
-function processMessage(message) {
+function processMessageReceived(message) {
     //"message:/sender:" + sender + ":/text:" + msg
     var parts = message.split(":/");
     var sender = parts[1].replace("sender:","");
@@ -73,9 +79,30 @@ function processMessage(message) {
     
     var conversationdiv = document.getElementById("content-" + sender);
     var div = document.createElement("div");
-    div.innerHTML = txt;
     div.className= "text-left";
+    if (timeStamp) {
+      var timediv = document.createElement("div");
+      timediv.className = "timestamp";
+      
+      timediv.innerHTML = "";
+      if (recordUser) {
+        timediv.innerHTML += sender;
+      }
+      var d = new Date();
+      if (recordDate) {
+        timediv.innerHTML += " " + d.getFullYear() + "/" + d.getMonth() + "/" + d.getDay();
+      }
+      if (recordTime) {
+        timediv.innerHTML += " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+      }
+
+      div.appendChild(timediv);
+    }
+    var txtdiv = document.createElement("div");
+    txtdiv.innerHTML = txt;
+    div.appendChild(txtdiv);
     conversationdiv.appendChild(div);
+    conversationdiv.scrollTop = conversationdiv.scrollHeight;
 }
 
 function onMessage(e) {
@@ -85,8 +112,8 @@ function onMessage(e) {
     //else {
     //    alert("Child window rejecting message from " + e.origin);
     //}
-    if (e.data.startsWith("users:/")) processUsers(e.data);
-    else if (e.data.startsWith("message:/")) processMessage(e.data);
+    if (e.data.startsWith("users:/")) processUsersReceived(e.data);
+    else if (e.data.startsWith("message:/")) processMessageReceived(e.data);
     else alert("Malformed message received: " + e.data);
 }
 
@@ -104,17 +131,38 @@ function displayUsers() {
     }
 }
 
-function updateMessageSent(msg){
-    var conversationdiv = document.getElementById("content-" + currentConversation.user.name);
+function updateMessageSent(txt){
+    var recipient = currentConversation.user.name;
+    var sender = window.name;
+    var conversationdiv = document.getElementById("content-" + recipient);
     var div = document.createElement("div");
-    div.innerHTML = msg;
     div.className= "text-right";
+    if (timeStamp) {
+      var timediv = document.createElement("div");
+      timediv.className = "timestamp";
+      
+      timediv.innerHTML = "";
+      if (recordUser) {
+        timediv.innerHTML += sender;
+      }
+      var d = new Date();
+      if (recordDate) {
+        timediv.innerHTML += " " + d.getFullYear() + "/" + d.getMonth() + "/" + d.getDay();
+      }
+      if (recordTime) {
+        timediv.innerHTML += " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+      }
+
+      div.appendChild(timediv);
+    }
+    var txtdiv = document.createElement("div");
+    txtdiv.innerHTML = txt;
+    div.appendChild(txtdiv);
     conversationdiv.appendChild(div);
-    document.getElementById("message").value = "";
     conversationdiv.scrollTop = conversationdiv.scrollHeight;
 }
 
-function updateMessageReceived(msg){
+/*function updateMessageReceived(msg){
     //look at sender
     //find sender's conversation tab
     //update conversation
@@ -126,6 +174,34 @@ function updateMessageReceived(msg){
     div.className= "text-left";
     conversationdiv.appendChild(div);
     conversationdiv.scrollTop = conversationdiv.scrollHeight;
+}*/
+
+function doStartUpload() {
+
+    progressBarElem.value = 0;
+    messageAreaElem.innerHTML = "";
+    
+    // Get the file selected by the user.
+    var fileElem = document.getElementById("file");
+    if (fileElem.files.length == 0) {
+            messageAreaElem.innerHTML = "You must select a file to upload first";
+            
+    } else {
+            messageAreaElem.innerHTML = "Opening file...";
+    
+            // Start reading the file into memory.
+            var reader = new FileReader();
+            reader.onloadend = doUpload;
+            reader.readAsArrayBuffer(fileElem.files[0]);
+    }
+}
+
+function uploadFile(filename) {
+  //code
+}
+
+function updateFileSent(filename) {
+  //code
 }
 
 function sendMessage() {
@@ -135,41 +211,27 @@ function sendMessage() {
         return;
     }
     
-    var txt = document.getElementById("message").value;
+    var txt = document.getElementById("message").value.trim();
+    var filename = document.getElementById("file");
     if (!txt) {
+        if (filename) {
+          uploadFile(filename);
+          window.opener.postMessage(msg,"*");
+          updateFileSent(filename);
+        }
+        document.getElementById("file")= "";
+        document.getElementById("message").value = "";
         return;
     }
     
     var msg = "message:/sender:" + window.name + ":/recepients:" + currentConversation.user.name + ":/text:" +  txt;
     window.opener.postMessage(msg,"*");
     updateMessageSent(txt);
+    document.getElementById("message").value = "";
 }
 
 function switchToUser(usr){
-    currentConversation = usr;
-}
-
-function createConnectionTab(user){
-    var usertab = document.createElement("div");
-    usertab.id = "tab-" + user;
-    usertab.className = "tab";
-    var radio = document.createElement("input");
-    radio.type = "radio";
-    radio.id = "radio-" + user;
-    radio.name = "user-selector";
-    var label = document.createElement("label");
-    label.id = "label-" + user;
-    label.for = "tab-" + user;
-    label.innerHTML  = user;
-    var content = document.createElement("div");
-    content.className = "content";
-    content.id = "content-" + user;
-    
-    usertab.appendChild(radio);
-    usertab.appendChild(label);
-    usertab.appendChild(content);
-    
-    return usertab;
+    currentConversation = existsConversation(usr);
 }
 
 function disconnect() {
@@ -189,6 +251,20 @@ function connectToUser(){
     connectUser(username);
 }
 
+function initProfileWindow(win){
+  win.document.getElementById("timeStamp").checked = timeStamp;
+  win.document.getElementById("recordTime").checked = recordTime;
+  win.document.getElementById("recordDate").checked = recordDate;
+  win.document.getElementById("recordUser").checked = recordUser;
+}
+
+function saveUserPreferences(){
+  timeStamp = win.document.getElementById("timeStamp").checked;
+  recordTime = win.document.getElementById("recordTime").checked;
+  recordDate = win.document.getElementById("recordDate").checked;
+  recordUser = win.document.getElementById("recordUser").checked;
+}
+
 function editProfile(){
   
   var pageUrl = location.pathname;
@@ -196,6 +272,39 @@ function editProfile(){
   var win = window.open(pageUrl, "Profile " + window.name, "width=275, height=275" +
                                                ", top=" + 50 +
                                                ", left=" + 50);
+  //setTimeout(function(win){ initProfileWindow();}, 500);
+  initProfileWindow(win);
+  var timer = setInterval(checkChild, 500);
+
+  function checkChild() {
+      if (win.closed) {
+          alert("Child window closed");   
+          clearInterval(timer);
+      }
+  }
+}
+
+function createConnectionTab(user){
+    var usertab = document.createElement("div");
+    usertab.id = "tab-" + user;
+    usertab.className = "tab";
+    var radio = document.createElement("input");
+    radio.type = "radio";
+    radio.id = "radio-" + user;
+    radio.name = "user-selector";
+    var label = document.createElement("label");
+    label.id = "label-" + user;
+    label.htmlFor = "radio-" + user;
+    label.innerHTML  = user;
+    var content = document.createElement("div");
+    content.className = "content";
+    content.id = "content-" + user;
+    
+    usertab.appendChild(radio);
+    usertab.appendChild(label);
+    usertab.appendChild(content);
+    
+    return usertab;
 }
 
 function connectUser(username){
@@ -216,8 +325,6 @@ function connectUser(username){
             var parent = document.getElementById("tabs");
             parent.appendChild(usertab);
         }
-        var radio = document.getElementById("radio-" + username);
-            radio.checked =true;
     }
     else {
         usertab = document.getElementById("tab-");
@@ -225,10 +332,9 @@ function connectUser(username){
         var radio = document.getElementById("radio-");
         radio.id = "radio-" + username;
         radio.name = "user-selector";
-        radio.checked =true;
         var label = document.getElementById("label-");
         label.id = "label-" + username;
-        label.for = "tab-" + username;
+        label.htmlFor = "radio-" + username;
         label.innerHTML  = username;
         var content = document.getElementById("content-");
         content.id =  "content-" + username;
@@ -242,6 +348,11 @@ function connectUser(username){
         conversations.push(conversation);
     }
     currentConversation = conversation;
+    var radio = document.getElementById("radio-" + username);
+    var label = document.getElementById("label-" + username);
+    radio.checked =true;
+    label.onclick = function() {switchToUser(username);}
+    //radio.onclick = function() {switchToUser(username);}
 }
 
 //window.onunload = disconnect();
