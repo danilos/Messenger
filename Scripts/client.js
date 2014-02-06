@@ -156,44 +156,36 @@ function updateMessageSent(txt){
       div.appendChild(timediv);
     }
     var txtdiv = document.createElement("div");
+    txtdiv.className = "content-data";
     txtdiv.innerHTML = txt;
     div.appendChild(txtdiv);
     conversationdiv.appendChild(div);
     conversationdiv.scrollTop = conversationdiv.scrollHeight;
 }
 
-/*function updateMessageReceived(msg){
-    //look at sender
-    //find sender's conversation tab
-    //update conversation
+function prepareUpload(file){
+    var file = document.getElementById('file').files[0];
+    var fileSize = 0;
+    if (file.size > 1024 * 1024)
+      fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+    else
+      fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
+    document.getElementById('fileName').innerHTML = 'Name: ' + file.name;
+    document.getElementById('fileSize').innerHTML = 'Size: ' + fileSize;
+    document.getElementById('fileType').innerHTML = 'Type: ' + file.type;
+    var messageArea = document.getElementById('messageArea');
+    messageArea.innerHTML = "Opening file...";
     
-    //var conversationdiv = document.getElementById("conversation");
-    var conversationdiv = document.getElementById("content-" + currentConversation.user.name);
-    var div = document.createElement("div");
-    div.innerHTML = msg;
-    div.className= "text-left";
-    conversationdiv.appendChild(div);
-    conversationdiv.scrollTop = conversationdiv.scrollHeight;
-}*/
-
-function doStartUpload() {
-
-    progressBarElem.value = 0;
-    messageAreaElem.innerHTML = "";
+    var txt = "<div id='fileinfo-" + file.name + "' class='fileinfo'>Name: " + file.name + "<br>Size: " + fileSize + "<br>Type: " + file.type + "<br>";
+    txt += "<progress class='progress-holder' id='progressBar-" + file.name + "' value='0' max='100'></progress></div>";
+    txt +=  "<div id='img-" + file.name + "' class='image-holder'><a href='images/file-holder.png' target='blank'><img src='images/file-holder.png' alt='" + file.name + "'/></a></div>";
     
-    // Get the file selected by the user.
-    var fileElem = document.getElementById("file");
-    if (fileElem.files.length == 0) {
-            messageAreaElem.innerHTML = "You must select a file to upload first";
-            
-    } else {
-            messageAreaElem.innerHTML = "Opening file...";
+    updateMessageSent(txt);
     
-            // Start reading the file into memory.
-            var reader = new FileReader();
-            reader.onloadend = doUpload;
-            reader.readAsArrayBuffer(fileElem.files[0]);
-    }
+    // Start reading the file into memory.
+    //var reader = new FileReader();
+    //reader.onloadend = doUpload;
+    //reader.readAsArrayBuffer(fileElem.files[0]);
 }
 
 function uploadFile(filename) {
@@ -212,12 +204,13 @@ function sendMessage() {
     }
     
     var txt = document.getElementById("message").value.trim();
-    var filename = document.getElementById("file");
+    var file = document.getElementById("file");
     if (!txt) {
-        if (filename) {
-          uploadFile(filename);
+        if (file) {
+          prepareUpload(file);
+          uploadFile(file);
           window.opener.postMessage(msg,"*");
-          updateFileSent(filename);
+          updateFileSent(file);
         }
         document.getElementById("file")= "";
         document.getElementById("message").value = "";

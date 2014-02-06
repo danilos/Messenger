@@ -6,6 +6,8 @@
     <link rel="stylesheet" type="text/css" href="Styles/main.css" />
     <link rel="stylesheet" type="text/css" href="Styles/dialog.css" />
     <link rel="stylesheet" type="text/css" href="Styles/bootstrap.css" />
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 </head>
 
 <body>
@@ -73,14 +75,18 @@
         
                 </textarea>
                 <button id="send" class="lockedBottom" onclick="sendMessage();">Send</button>
-                <input id="file" type="file" name="files[]"|multiple/>
-                <progress id="progressBar" value="0" max="100"></progress> 
+                <input id="file" type="file" name="files" onchange="fileSelected();" />
+                <progress id="progressBar" value="0" max="100"></progress>
+                <div id="fileName"></div>
+                <div id="fileSize"></div>
+                <div id="fileType"></div>
                 <span id="messageArea"></span>
             </div>
             <button id="disconnect" class="positionRight" onclick="disconnect();">Disconnect</button>
         </div>
     </div>
     <script type="text/javascript" src="Scripts/client.js"></script>
+    <script type="text/javascript" src="Scripts/fileupload.js"></script>
     <script type="text/javascript" src="Scripts/jquery.js"></script>
     <script type="text/javascript" src="Scripts/bootstrap.js"></script>
 
