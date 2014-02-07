@@ -38,6 +38,13 @@
   background:rgb(250,250,250);
 }
 
+.texteditor{
+    border-color: rgb(230,230,230);
+    border: 1px;
+    border-style: solid;
+    overflow-y: scroll;
+}
+
 .tab {
   float: left;
 }

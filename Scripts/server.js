@@ -106,14 +106,24 @@ function broadcastUsers() {
     }
 }
 
+function storeMessage(sender, recepient, msg, delivered) {
+    var time = new Date();
+    
+}
+
 function broadcastMessage(msg, sender, recepients) {
-    msg = msg.replace("text:","");
     sender = sender.replace("sender:","");
     recepients = recepients.replace("recepients:","").split("|");
     
     for (var i=0; i < recepients.length; i++){
         var user = existsUser(recepients[i]);
-        user.window.postMessage("message:/sender:" + sender + ":/text:" + msg, "*");
+        if (!user) {
+            storeMessage(sender, recepients[i], msg, false);
+        }
+        else{
+            storeMessage(sender, recepients[i], msg, true);
+            user.window.postMessage("message:/sender:" + sender + ":/"  + msg, "*");
+        }
     }
 }
 

@@ -19,46 +19,7 @@
                 <button onclick="connectToUser();">Connect</button>
             </div>
             <div >
-                <label>Connected as: </label><a href="#openModal" class="positionRight" id="user-name">user-name</a>
-                <!--button class="positionRight" id="user-name" onclick="editProfile();"></button-->
-                <!--div id="openModal" class="modalDialog">
-                    <div>
-                        <a href="#close" title="Close" class="close">X</a>
-                        <div class="viewport">
-                            <div class="container">
-                                <div class="tabs" id="tabs">
-                                            
-                                    <div class="tab" id="tab-profile">
-                                        <input type="radio" id="radio-profile" name="profile-selector" checked="checked">
-                                        <label id="label-profile" for="radio-profile">Profile</label>
-                                        <div class="properties" id="profile">
-                                        </div> 
-                                    </div>
-                                    
-                                    <div class="tab" id="tab-preferences">
-                                        <input type="radio" id="radio-preferences" name="profile-selector">
-                                        <label id="label-preferences" for="radio-preferences">Preferences</label>
-                                        <div class="properties" id="properties">
-                                            <input name="timeStamp" value="timeStamp" type="checkbox">
-                                            <label class="simple" for = "timeStamp">Time Stamp</label>
-                                            <input name="recordTime" value="recordTime" type="checkbox">
-                                            <label class="simple" for = "recordTime">Record time</label><br>
-                                            <input name="recordDate" value="recordDate" type="checkbox">
-                                            <label class="simple" for = "recordDate">Record date</label>
-                                            <input name="recordUser" value="recordUser" type="checkbox">
-                                            <label class="simple" for = "recordUser">Record user</label>
-                                        </div> 
-                                    </div>        
-                                </div>
-                                <div id="controlbuttons">
-                                    <button type="button" id="ok" class="okcancel">OK</button>
-                                    <button type="button" id="ok" class="okcancel">Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div-->
+                <label>Connected as: </label><button class="positionRight" id="user-name" onclick="editProfile();"></button>
             
             <div class="tabs" id="tabs">
                 
@@ -71,9 +32,16 @@
                 
             </div>
             <div id="messagebox">
-                <textarea id="message" autofocus="autofocus" class="fullbox">
+                <div id="emoicons" class="emoicon">
+                    <div >
+                        <a href="#15.png" onclick="insertSmiley('smileys/15.png', ':)');"
+                           onmousedown="inter=setInterval(insertSmileys, 200);" onmouseup="clearInterval(inter);"
+                        ><img id=":)" src="smileys/15.png" alt=":)"></a>
+                    </div>
+                </div>
+                <div contentEditable="true" id="message" autofocus="autofocus" class="fullbox texteditor">
         
-                </textarea>
+                </div>
                 <button id="send" class="lockedBottom" onclick="sendMessage();">Send</button>
                 <input id="file" type="file" name="files" onchange="fileSelected();" />
                 <progress id="progressBar" value="0" max="100"></progress>

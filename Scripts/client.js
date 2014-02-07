@@ -67,7 +67,8 @@ function processMessageReceived(message) {
     //"message:/sender:" + sender + ":/text:" + msg
     var parts = message.split(":/");
     var sender = parts[1].replace("sender:","");
-    var txt = parts[2].replace("text:","");;
+    var txt = parts[2].replace("text:","");
+    txt = txt.replace("data:","");
     
     //alert("Message received: " + message);
     var conversation = existsConversation(sender);
@@ -99,6 +100,7 @@ function processMessageReceived(message) {
       div.appendChild(timediv);
     }
     var txtdiv = document.createElement("div");
+    txtdiv.className = "content-data";
     txtdiv.innerHTML = txt;
     div.appendChild(txtdiv);
     conversationdiv.appendChild(div);
@@ -175,17 +177,28 @@ function prepareUpload(file){
     document.getElementById('fileType').innerHTML = 'Type: ' + file.type;
     var messageArea = document.getElementById('messageArea');
     messageArea.innerHTML = "Opening file...";
+    var href = "";
+    if(file.type.startsWith('image/')){
+      href = 'images/image-holder.png';
+    }
+    else if(file.type.startsWith('audio/') || file.type.startsWith('video/')){
+      href = 'images/video-holder.png';
+    }
+    else if(file.type.startsWith('text/') || file.type.startsWith('application/')){
+      href = 'images/file-holder.png';
+    }
+    else href = 'images/generic-holder.png';
+    var source = href;
     
     var txt = "<div id='fileinfo-" + file.name + "' class='fileinfo'>Name: " + file.name + "<br>Size: " + fileSize + "<br>Type: " + file.type + "<br>";
     txt += "<progress class='progress-holder' id='progressBar-" + file.name + "' value='0' max='100'></progress></div>";
-    txt +=  "<div id='img-" + file.name + "' class='image-holder'><a href='images/file-holder.png' target='blank'><img src='images/file-holder.png' alt='" + file.name + "'/></a></div>";
-    
-    updateMessageSent(txt);
+    txt +=  "<div id='img-" + file.name + "' class='image-holder'><a href='" + href + "' target='blank'><img src='" + source + "' alt='" + file.name + "'/></a></div>";
     
     // Start reading the file into memory.
     //var reader = new FileReader();
     //reader.onloadend = doUpload;
     //reader.readAsArrayBuffer(fileElem.files[0]);
+    return txt;
 }
 
 function uploadFile(filename) {
@@ -196,6 +209,19 @@ function updateFileSent(filename) {
   //code
 }
 
+function embedEmoicons(txt) {
+  return txt;
+}
+
+function insertSmiley(smiley, alt){
+  var txtSmiley = "<img src='" + smiley + "' alt='" + alt + "'>";
+  document.getElementById("message").innerHTML += txtSmiley;
+}
+
+function insertSmileys(){
+  insertSmiley('smileys/15.png', ':)');
+}
+
 function sendMessage() {
     
     if (!currentConversation) {
@@ -203,24 +229,23 @@ function sendMessage() {
         return;
     }
     
-    var txt = document.getElementById("message").value.trim();
+    var txt = document.getElementById("message").innerHTML.trim();
     var file = document.getElementById("file");
+    var msg="";
+    var msgType = "";
     if (!txt) {
-        if (file) {
-          prepareUpload(file);
-          uploadFile(file);
-          window.opener.postMessage(msg,"*");
-          updateFileSent(file);
-        }
-        document.getElementById("file")= "";
-        document.getElementById("message").value = "";
-        return;
-    }
+        if (!file) return;
+        msgType = ":/data:";
+        txt += prepareUpload(file);
+        //uploadFile(file);
+        updateFileSent(file);
+        document.getElementById("file")[0]= "";
+    } else msgType = ":/text:";;
     
-    var msg = "message:/sender:" + window.name + ":/recepients:" + currentConversation.user.name + ":/text:" +  txt;
+    msg = "message:/sender:" + window.name + ":/recepients:" + currentConversation.user.name + msgType +  embedEmoicons(txt);
     window.opener.postMessage(msg,"*");
     updateMessageSent(txt);
-    document.getElementById("message").value = "";
+    document.getElementById("message").innerHTML = "";
 }
 
 function switchToUser(usr){
@@ -351,6 +376,10 @@ function connectUser(username){
 //window.onunload = disconnect();
 
 function  init(){
+  // initialize emoicons?????
+  //better images or canvas?
+    var emoicons = {};
+    emoicons[':)'] = 'images/1.png';
     window.addEventListener("message", onMessage, true);
     window.document.title = "Welcome " + window.name;
     var spanEle = document.getElementById("user-name");
